@@ -1,0 +1,132 @@
+//reel object
+    //reelnum
+    //isWin = false;
+    //array of tile objects
+        //each holds tile text and line num
+
+    //get outcome: (asks outcome object) 
+            //for each numWin, did this reel win ?
+            //assigns icon text 
+
+    //get icon set 
+        //for all lines in this
+            //arr.push(icon)
+        //return arr
+function Reel(reelnum, tile1, tile2, tile3) {
+    this.reelnum = reelnum;
+    isWin = false;
+
+    this.tile1 = tile1;
+    this.tile2 = tile2;
+    this.tile3 = tile3;
+}
+Reel.prototype.getOutcome = function () { };
+Reel.prototype.getOutgetIconeSet = function () { };
+
+function SlotMachine(reel1, reel2, reel3) {
+    this.lineHits = 0;
+    this.grid = [reel1, reel2, reel2];
+}
+
+
+//outcome object
+    //linehits = 0;
+    //grid = [];
+
+
+
+    //generate outcome
+        //getWinType
+        //placeTiles
+        //calc winnings
+        
+
+    //random winType
+        //line hit - 30%
+            //chance of wilds <--25%
+            //rand num of line hits
+            //random icon type
+            //rand num of icon hits (baesd on reelnums)
+            
+        //free spins - 15%
+        //bonus - 5% <-- higher if already won, up to max bonus = 0%
+        //else lose
+
+    //assign tiles
+       //place winning tiles:
+        //for each reel
+            //for each line  hit
+                //rand line 
+                //line = icon text
+        //place losing tiles:
+            //for each reel
+            //for each line
+            //rand icon (previous reel)
+            
+
+    //calc winnings
+        //for each line hit
+            //betAmount * icon points * iconhits
+
+
+
+
+
+
+//model
+    //totalwins
+    //totalLosses
+    //bet amount = .25, .5, .75, 1, 1.5, 2, 2.5
+    //cash bal
+    //winAmount = 0;
+    //isWin = false;
+    //numReels
+    //numLines
+    
+
+    //init
+        //list of icons
+        //create outcome
+        //create reels
+            //func loop to assign 0 = numLines for each reel
+
+    //generate random(max, arr of unavailable)
+
+    //reset
+
+    //take cash
+
+    //give winnings
+var model = {
+    linehits: 0,
+
+
+
+};
+
+
+
+
+//controller
+    //resets hand
+    //assign bet + take cash 
+    //do
+        //generate outcome
+        //get outcome
+    //while (free spins > 0)
+    //give winnings
+    //view animate
+
+
+//view
+    //animate spin
+
+    //displayoutcome
+
+    //show cash
+
+    //show winning
+        //if big win
+
+
+        

@@ -23,3 +23,38 @@ td {
     margin-top: 10px;
 }
 
+.taxi {
+    background: url("images/taxi_301x301.png") no-repeat center center;
+}
+.train {
+    background: url("images/train.png") no-repeat center center;
+}
+.compass {
+    background: url("images/compass.png") no-repeat center center;
+}
+.camera {
+    background: url("images/travel-vector-free-icon-set-30.png") no-repeat center center;
+}
+.luggage {
+    background: url("images/luggage2.jpg") no-repeat center center;
+}
+.map {
+    background: url("images/map.png") no-repeat center center;
+}
+.plane {
+    background: url("images/plane.png") no-repeat center center;
+}
+.globe {
+    background: url("images/travel-vector-free-icon-set-21.png") no-repeat center center;
+}
+.palmTree {
+    background: url("images/palm-tree.jpg") no-repeat center center;
+}
+.passport {
+    background: url("images/passport.png") no-repeat center center;
+}
+.boardingPass {
+    background: url("images/travel-vector-free-icon-set-22.png") no-repeat center center;
+}
+
+
