@@ -1,4 +1,5 @@
 const betOptions = [.25, .5, .75, 1, 1.5, 2, 2.5, 3];
+
 const icons = [
     { name: "taxi", points: 2, key: 0 },
     { name: "train", points: 2, key: 1 },
@@ -12,13 +13,14 @@ const icons = [
     { name: "passport", points: 20, key: 9 },
     { name: "boardingPass", points: 50, key: 10 }];
 
-function lookupIconNameFromKey(key) {
-    for (var i = 0; i < icons.length; i++) {
-        if (icons[i].key === key) {
-            return icons[i].name;
-        }
-    }
-};
+    //or.. instead of lookup... icons[i].name
+// function lookupIconNameFromKey(key) {
+//     for (var i = 0; i < icons.length; i++) {
+//         if (icons[i].key === key) {
+//             return icons[i].name;
+//         }
+//     }
+// };
 function Reel(reelnum, numTiles) {//tile1, tile2, tile3) {
     this.reelnum = reelnum;
     isWin = false;
@@ -63,20 +65,22 @@ function SlotMachine(reel0, reel1, reel2, reel3, reel4, reel5, reel6, reel7, ree
 function generateRandomNum(max, arrUnavailable, skew) {
     
     var randomGeneratedNumber;
-    var randomIcon;
     if (arrUnavailable === undefined){
         arrUnavailable = [];
     }
-    console.log('arr unavailable:');
-    console.log(arrUnavailable);
     do {
         randomGeneratedNumber = Math.floor(Math.random() * max);
-        //randomIcon = lookupIconNameFromKey(randomGeneratedNumber);
-        console.log('random number: ' + randomGeneratedNumber);
-    } while (arrUnavailable.indexOf(randomGeneratedNumber) > -1); //(arrUnavailable.indexOf(randomIcon) > -1);
+    } while (arrUnavailable.indexOf(randomGeneratedNumber) > -1); 
 
-    return randomGeneratedNumber; //randomIcon;
+    return randomGeneratedNumber; 
 };
+function doubleLoop(maxField1, maxField2, func){
+    for (var i = 0; i < maxField1; i++){
+        for (var j = 0; j < maxField2; j++){
+            func(i,j);
+        }
+    }
+}
 
 var model = {
 
@@ -93,7 +97,7 @@ var model = {
     cashBalance: 1000,
 
     isWin: false,
-    linehits: 0,
+    lineHits: 0,
     reelHits: 0,
     winIconKeys: [],
     winAmount: 0,
@@ -101,7 +105,20 @@ var model = {
     totalLosses: 0,
     
     reset: function () {
-        //reset all tile objects to no icon, iswin false
+        doubleLoop(this.numReels, this.numLines, function(i,j){
+            // console.log(i, j);
+            // console.log(model.slotMachine);
+            // console.log(model.slotMachine.grid[i]);
+            // console.log(model.slotMachine.grid[i].tiles[j]);
+            // console.log(model.slotMachine.grid[i].tiles[j].icon);
+            model.slotMachine.grid[i].tiles[j].icon = "";
+            model.slotMachine.grid[i].tiles[j].isWin = false;
+        })
+        this.isWin = false;
+        this.lineHits = 0;
+        this.reelHits = 0;
+        this.winIconKeys = [];
+        this.winAmount = 0;
 
     },
     updateCashBalance: function (amountChange) {
@@ -116,15 +133,15 @@ var model = {
             this.isWin = true;
             console.log('is win: ' + this.isWin);
             this.totalWins++;
-            this.linehits = generateRandomNum(this.numLines);
-            console.log('linehits: ' + this.linehits);
-            this.reelHits = generateRandomNum(this.numReels, [0,1]); //<-- must be at least 3, no points if we only matched 1 or 2 reels
+            this.lineHits = generateRandomNum(this.numLines) + 1; //adding 1 (0 hit is actually 1 hit)
+            console.log('lineHits: ' + this.lineHits);
+            this.reelHits = generateRandomNum(this.numReels, [0,1,2]) + 1; //<-- must be at least 3, no points if we only matched 1 or 2 reels
             console.log('reelhits: ' + this.reelHits);
-            for (var i = 0; i < this.linehits; i++) {
+            for (var i = 0; i < this.lineHits; i++) {
                 this.winIconKeys.push(generateRandomNum(icons.length, this.winIconKeys));
-                console.log('wintypes:');
-                console.log(this.winIconKeys);
             }
+            console.log('win Icon keys:');
+            console.log(this.winIconKeys);
 
             //add wilds in later
             // var chanceForWilds = generateRandomNum(100);
@@ -141,63 +158,66 @@ var model = {
             this.totalWins++;
         } else { //<-- 50%
             //lose
-            this.isWin = false;
             this.totalLosses;
-            this.linehits = 0;
-            this.reelHits = 0;
-            this.winIconKeys = [];
-            this.winAmount = 0;
         } 
     },
     placeTiles: function() {
-        var winningTileLocationsOnThisReel = [];
-        var randomLine = 0;
-        var tile = {};
 
         //place winning tiles
         if (this.isWin) {
-            for (var i = 0; i < this.reelHits; i++){
-                for (var j = 0; j < this.linehits; j++){
-                    randomLine = randomGeneratedNumber(this.numLines, winningTileLocationsOnThisReel);
-                    tile = lookupTileLocationInReel(randomLine, i);
-                    tile.isWin = true;
-                    tile.icon = lookupIconNameFromKey(model.winIconKeys[j]);
+            doubleLoop(this.reelHits, this.lineHits, function(i,j){
+                //model.slotMachine.grid[i].tiles[j].
+                var tiles = model.slotMachine.grid[i].tiles;
+                var randomLine = 0;
+                var flag = true;
+
+                while (flag){ //loop until we find one that's not already taken
+                    randomLine = generateRandomNum(model.numLines)
+                    if (!tiles[randomLine].isWin) {
+                        flag = false;
+                        tiles[randomLine].isWin = true;
+                        tiles[randomLine].name = icons[model.winIconKeys[j]].name;
+                    }
+
                 }
-            }
+            })
         }
 
         //fill in grid with losing tiles
-        for (var k = 0; k < this.numReels; k++){
-            for (var l = 0; l < this.numLines; l++) {
-                tile = lookupTileLocationInReel(k);
-                if (!tile.isWin){
-                    tile.icon = lookupIconNameFromKey(randomGeneratedNumber(icons.length, this.winIconKeys));
-                    //need to also exclude icons from previous reel to accidentily match unintended icons
-                }
+        doubleLoop(this.numReels, this.numLines, function(i,j){
+            var tile = model.slotMachine.grid[i].tiles[j];
+            if (!tile.isWin) {
+                var randomIcon = icons[generateRandomNum(icons.length, model.winIconKeys)].name;
+                tile.name = randomIcon;
+                tile.isWin = false;
             }
-        }
-
+        })
     },
     calculateWinnings: function() {
-        //calc winnings
-            //for each line hit
-                //betAmount * icon points * iconhits
+        for (var i = 0; i < this.lineHits; i++) {
+            this.winAmount = this.betAmount * this.reelHits * icons[this.winIconKeys].points;
+        }
     }
-
-
 };
 
 var controller = {
-    //handle bet
-        //resets hand
+    handleBet: function(){
+
+        model.reset();
+        //console.log(model);
         //assign bet + take cash 
         //do
-            //generate outcome
-            //place tiles
+            model.generateOutcome();
+            model.placeTiles();
+            console.log(model.slotMachine);
             //calcwinnings
         //while (free spins > 0)
         //give winnings
         //view animate
+            
+    }
+    //handle bet
+        
 
     //handle bet amount change 
 };
@@ -216,17 +236,23 @@ var view = {
 }
 
 function init(){
-    console.log("init run start."); 
+    
+    //set up tile grid
+    //do I even need to define the reel object? just loop to create and add to slot machine array obj
     model.reel0 = new Reel(0, model.numLines);
-    //console.log()
     model.reel1 = new Reel(1, model.numLines);
     model.reel2 = new Reel(2, model.numLines);
     model.reel3 = new Reel(3, model.numLines);
     model.reel4 = new Reel(4, model.numLines);
 
     model.slotMachine = new SlotMachine(model.reel0, model.reel1, model.reel2, model.reel3, model.reel4);
-    console.log(model.slotMachine);
-    console.log("init run complete.");
+
+    //set up handlers
+    var submitBet = document.getElementById("repeatBet");
+    submitBet.onclick = controller.handleBet;
+
+    //  console.log(model.slotMachine);
+    //  console.log("init run complete.");
 }
 
 window.onload = init;
@@ -242,10 +268,17 @@ window.onload = init;
 // console.log(model.reel4);
 // console.log(model.slotMachine);
         
-model.generateOutcome();
+//model.generateOutcome();
 // console.log(model.isWin);
-// console.log(model.linehits);
+// console.log(model.lineHits);
 // console.log(model.reelHits);
 // // console.log(model.winIconTypes);
 // console.log('wintypes:');
 //                 console.log(model.winIconKeys);
+
+// var x = icons[3].name;
+// console.log(x);
+
+//doubleLoop(3,4,function(i,j){console.log(i,j);})
+
+//model.placeTiles();
