@@ -1,154 +1,210 @@
+const betOptions = [.25, .5, .75, 1, 1.5, 2, 2.5, 3];
+const icons = [
+    { name: "taxi", points: 2, key: 0 },
+    { name: "train", points: 2, key: 1 },
+    { name: "compass", points: 2, key: 2 },
+    { name: "camera", points: 3, key: 3 },
+    { name: "luggage", points: 3, key: 4 },
+    { name: "map", points: 5, key: 5 },
+    { name: "palmTree", points: 5, key: 6 },
+    { name: "plane", points: 10, key: 7 },
+    { name: "globe", points: 10, key: 8 },
+    { name: "passport", points: 20, key: 9 },
+    { name: "boardingPass", points: 50, key: 10 }];
+
+function lookupIconNameFromKey(key) {
+    for (var i = 0; i < icons.length; i++) {
+        if (icons[i].key === key) {
+            return icons[i].name;
+        }
+    }
+};
 function Reel(reelnum, numTiles) {//tile1, tile2, tile3) {
     this.reelnum = reelnum;
     isWin = false;
+    this.tiles = [];
 
     for (var i = 0; i < numTiles; i++) {
-        //what?
+        this.tiles.push({location: i, icon: "", isWin: false});
     }
-    /*this.tile1 = tile1;
-    this.tile2 = tile2;
-    this.tile3 = tile3;*/
+
+    //something to experiment with:
+    //instead of lookup function,
+    //getTileAtLocation(tileNum){
+        //for each obj in this.tiles
+    //}
+};
+function lookupTileLocationInReel(tileNum, reelNum){
+    for (var i = 0; i < model.numLines; i++){
+        if (model.slotMachine[reelNum].tiles[i].location === tileNum){
+            return model.slotMachine[reelNum].tiles[i];
+        }
+    }
 }
 Reel.prototype.getOutcome = function () {
-    for (var i in //(asks outcome object)
+    //for (var i in //(asks outcome object)
             //for each numWin, did this reel win ?
     //assigns icon text 
 };
-Reel.prototype.getOutgetIconeSet = function () {
+Reel.prototype.getIconSet = function () {
 //for all lines in this
             //arr.push(icon)
     //return arr
 };
 
-function SlotMachine(reel1, reel2, reel3) {
-    this.lineHits = 0;
-    this.grid = [reel1, reel2, reel2];
-}
-function generateOutcome() {
-    var lineHits = 0;
+function SlotMachine(reel0, reel1, reel2, reel3, reel4, reel5, reel6, reel7, reel8, reel9) {
+    this.grid = [];
 
-    //generate outcome
-        //getWinType
-        //placeTiles
-        //calc winnings
-
-}
-function getWinType() {
-    //random winType
-        //line hit - 30%
-            //chance of wilds <--25%
-            //rand num of line hits
-            //random icon type
-            //rand num of icon hits (baesd on reelnums)
-
-        //free spins - 15%
-        //bonus - 5% <-- higher if already won, up to max bonus = 0%
-        //else lose
-}
-function placeTiles() {
-    //assign tiles
-       //place winning tiles:
-        //for each reel
-            //for each line  hit
-                //rand line 
-                //line = icon text
-        //place losing tiles:
-            //for each reel
-            //for each line
-            //rand icon (previous reel)
-}
-function calculateWinnings() {
-    //calc winnings
-        //for each line hit
-            //betAmount * icon points * iconhits
-}
-function lookupIconNameFromKey(key) {
-    for (var ea in model.icons) {
-        if (key === ea.key) {
-            return ea.name;
-        }
+    for (var i = 0; i < arguments.length; i++) {
+        this.grid.push(arguments[i]);
     }
+};
 
-    //console.log(tiles);
-    //for (var t in tiles) {
-    for (var t = 0; t < tiles.length; t++) {
-        //console.log(t);
-        //console.log(tiles[t]);
-        if (tiles[t].randGeneratedKey === index) {
-            return tiles[t];
-        }
+function generateRandomNum(max, arrUnavailable, skew) {
+    
+    var randomGeneratedNumber;
+    var randomIcon;
+    if (arrUnavailable === undefined){
+        arrUnavailable = [];
     }
-}
+    console.log('arr unavailable:');
+    console.log(arrUnavailable);
+    do {
+        randomGeneratedNumber = Math.floor(Math.random() * max);
+        //randomIcon = lookupIconNameFromKey(randomGeneratedNumber);
+        console.log('random number: ' + randomGeneratedNumber);
+    } while (arrUnavailable.indexOf(randomGeneratedNumber) > -1); //(arrUnavailable.indexOf(randomIcon) > -1);
+
+    return randomGeneratedNumber; //randomIcon;
+};
 
 var model = {
-    linehits: 0,
-    totalwins: 0,
-    totalLosses: 0,
-    betAmount: 0, //.25, .5, .75, 1, 1.5, 2, 2.5
-    cashBalance: 1000,
-    winAmount: 0,
-    isWin: false,
+
     numReels: 5,
     numLines: 3,
+    reel0: {},
+    reel1: {},
+    reel2: {},
+    reel3: {},
+    reel4: {},
+    slotMachine: {},
+
+    betAmount: 0,
+    cashBalance: 1000,
+
+    isWin: false,
+    linehits: 0,
+    reelHits: 0,
+    winIconKeys: [],
+    winAmount: 0,
+    totalWins: 0,
+    totalLosses: 0,
     
-    init: function () {
-        var icons = [
-            { name: "taxi", points: 2, key: 0 },
-            { name: "train", points: 2, key: 1 },
-            { name: "compass", points: 2, key: 2 },
-            { name: "camera", points: 3, key: 3 },
-            { name: "luggage", points: 3, key: 4 },
-            { name: "map", points: 5, key: 5 },
-            { name: "palmTree", points: 5, key: 6 },
-            { name: "plane", points: 10, key: 7 },
-            { name: "globe", points: 10, key: 8 },
-            { name: "passport", points: 20, key: 9 },
-            { name: "boardingPass", points: 50, key: 10 }];
-
-        var reel0 = new Reel(0, numLines);
-        var reel1 = new Reel(1);
-        var reel2 = new Reel(2);
-        var reel3 = new Reel(3);
-        var reel4 = new Reel(4);
-
-        var slotMachine = new SlotMachine(reel0, reel1, reel2, reel3, reel4);
-    },
-    generateRandomNum: function(max, arrUnavailable) {
-        var randomGeneratedNumber;
-        var randomIcon;
-        do {
-            randomGeneratedNumber = Math.floor(Math.random() * max);
-            randomIcon = lookupIconNameFromKey(randGeneratedNumber);
-        } while (arrUnavailable.indexOf(randomTile) > -1);
-
-        return randomIcon;
-    },
     reset: function () {
+        //reset all tile objects to no icon, iswin false
 
     },
-    updateCashBalance: function (change) {
-        this.cashBalance += change;
+    updateCashBalance: function (amountChange) {
+        this.cashBalance += amountChange;
         view.updateCash();
+    },
+    generateOutcome: function() {
+        var outcome = 29; //generateRandomNum(100);
+        console.log('outcome: ' + outcome);
+        if (outcome <= 30) { //<-- 30%
+            //reel connect
+            this.isWin = true;
+            console.log('is win: ' + this.isWin);
+            this.totalWins++;
+            this.linehits = generateRandomNum(this.numLines);
+            console.log('linehits: ' + this.linehits);
+            this.reelHits = generateRandomNum(this.numReels, [0,1]); //<-- must be at least 3, no points if we only matched 1 or 2 reels
+            console.log('reelhits: ' + this.reelHits);
+            for (var i = 0; i < this.linehits; i++) {
+                this.winIconKeys.push(generateRandomNum(icons.length, this.winIconKeys));
+                console.log('wintypes:');
+                console.log(this.winIconKeys);
+            }
+
+            //add wilds in later
+            // var chanceForWilds = generateRandomNum(100);
+            // if (chanceForWilds <= 25){
+
+            // }
+        } else if (outcome <=45) {//<-- 15%
+            //free spins
+            this.isWin = true;
+            this.totalWins++;
+        } else if (outcome <=50) {//<-- 5%  <-- higher if already won, up to max bonus = 0%
+            //bonus
+            this.isWin = true;
+            this.totalWins++;
+        } else { //<-- 50%
+            //lose
+            this.isWin = false;
+            this.totalLosses;
+            this.linehits = 0;
+            this.reelHits = 0;
+            this.winIconKeys = [];
+            this.winAmount = 0;
+        } 
+    },
+    placeTiles: function() {
+        var winningTileLocationsOnThisReel = [];
+        var randomLine = 0;
+        var tile = {};
+
+        //place winning tiles
+        if (this.isWin) {
+            for (var i = 0; i < this.reelHits; i++){
+                for (var j = 0; j < this.linehits; j++){
+                    randomLine = randomGeneratedNumber(this.numLines, winningTileLocationsOnThisReel);
+                    tile = lookupTileLocationInReel(randomLine, i);
+                    tile.isWin = true;
+                    tile.icon = lookupIconNameFromKey(model.winIconKeys[j]);
+                }
+            }
+        }
+
+        //fill in grid with losing tiles
+        for (var k = 0; k < this.numReels; k++){
+            for (var l = 0; l < this.numLines; l++) {
+                tile = lookupTileLocationInReel(k);
+                if (!tile.isWin){
+                    tile.icon = lookupIconNameFromKey(randomGeneratedNumber(icons.length, this.winIconKeys));
+                    //need to also exclude icons from previous reel to accidentily match unintended icons
+                }
+            }
+        }
+
+    },
+    calculateWinnings: function() {
+        //calc winnings
+            //for each line hit
+                //betAmount * icon points * iconhits
     }
 
 
 };
 
+var controller = {
+    //handle bet
+        //resets hand
+        //assign bet + take cash 
+        //do
+            //generate outcome
+            //place tiles
+            //calcwinnings
+        //while (free spins > 0)
+        //give winnings
+        //view animate
 
+    //handle bet amount change 
+};
 
+    
 
-//controller
-    //resets hand
-    //assign bet + take cash 
-    //do
-        //generate outcome
-        //get outcome
-    //while (free spins > 0)
-    //give winnings
-    //view animate
-
-
-//view
+var view = {
     //animate spin
 
     //displayoutcome
@@ -157,6 +213,39 @@ var model = {
 
     //show winning
         //if big win
+}
 
+function init(){
+    console.log("init run start."); 
+    model.reel0 = new Reel(0, model.numLines);
+    //console.log()
+    model.reel1 = new Reel(1, model.numLines);
+    model.reel2 = new Reel(2, model.numLines);
+    model.reel3 = new Reel(3, model.numLines);
+    model.reel4 = new Reel(4, model.numLines);
 
+    model.slotMachine = new SlotMachine(model.reel0, model.reel1, model.reel2, model.reel3, model.reel4);
+    console.log(model.slotMachine);
+    console.log("init run complete.");
+}
+
+window.onload = init;
+
+//var x = lookupIconNameFromKey(7);
+// var x = generateRandomNum(10, ["taxi","train","compass","globe","map","luggage","camera","palmTree","plane","boardingPass"]);
+// console.log(x);
+
+// console.log(model.reel0);
+// console.log(model.reel1);
+// console.log(model.reel2);
+// console.log(model.reel3);
+// console.log(model.reel4);
+// console.log(model.slotMachine);
         
+model.generateOutcome();
+// console.log(model.isWin);
+// console.log(model.linehits);
+// console.log(model.reelHits);
+// // console.log(model.winIconTypes);
+// console.log('wintypes:');
+//                 console.log(model.winIconKeys);
