@@ -1,30 +1,88 @@
-body {
+@keyframes blink { 
+    50% { border-color: #ffed00; } 
+ }
+ body {
     width: 1000px;
     margin-left: auto;
     margin-right: auto;
-    border: thin solid black;
+    /*border: thin solid black;*/
     padding: 30px;
     margin-top: 0px;
+    background: url("images/sunset.jpg") no-repeat center center;
 }
-table{
+#screen{
     display: table;
-    border: thin solid black;
+    /*border: thin solid black;*/
     border-spacing: 10px;
 }
-td {
+.tile {
     display: table-cell;
     height: 150px;
     width: 255px;
-    background-color: blue;
+    background: url("images/PassportToRichesLogo.png") no-repeat center center;
+    border: transparent thick dotted;
+}
+header {
+    text-align: center;
 }
 #panel {
-    border: thin solid black;
-    height: 150px;
+    /*border: thin solid black;*/
     margin-top: 10px;
+    /*
+    padding-left: 200px;
+    padding-right: 200px;*/
+    height:100px;
+    text-align: center;
+    background-color: white;
+    opacity: .8;
 }
-
+#displayPanel {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    float: left;
+    left: 25px;
+    top: 10px
+}
+#submitBetPanel {
+    position: relative;
+    float: right;
+    right: 25px;
+    top: -100px;
+}
+#setBetPanel {
+    padding: 20px 300px;
+    text-align: center;
+}
+#betAmount{
+    display: inline-block;
+    border: thin black solid;
+    /*padding: 15px;
+    width: 50px;
+    height: 20px;*/
+}
+.betChange {
+    border: thin solid black;
+    height: 50px;
+    width: 50px;
+    border-radius: 3em;
+}
+#repeatBet, #maxBet {
+    border: thin solid black;
+    display: inline-block;
+    width: 100px;
+    height: 50px;
+    padding-top: 15px;
+    border-radius: 1.5em;
+    text-align: center;
+}
+.displayAmount{
+    display: inline;
+    width: 80px;
+    margin-bottom: 25px;
+}
 .taxi {
-    background: url("images/taxi_301x301.png") no-repeat center center;
+    background: url("images/taxi.png") no-repeat center center;
 }
 .train {
     background: url("images/train.png") no-repeat center center;
@@ -33,10 +91,10 @@ td {
     background: url("images/compass.png") no-repeat center center;
 }
 .camera {
-    background: url("images/travel-vector-free-icon-set-30.png") no-repeat center center;
+    background: url("images/camera.png") no-repeat center center;
 }
 .luggage {
-    background: url("images/luggage2.jpg") no-repeat center center;
+    background: url("images/luggage.png") no-repeat center center;
 }
 .map {
     background: url("images/map.png") no-repeat center center;
@@ -45,16 +103,19 @@ td {
     background: url("images/plane.png") no-repeat center center;
 }
 .globe {
-    background: url("images/travel-vector-free-icon-set-21.png") no-repeat center center;
+    background: url("images/globe.png") no-repeat center center;
 }
 .palmTree {
-    background: url("images/palm-tree.jpg") no-repeat center center;
+    background: url("images/palmTree.png") no-repeat center center;
 }
 .passport {
     background: url("images/passport.png") no-repeat center center;
 }
 .boardingPass {
-    background: url("images/travel-vector-free-icon-set-22.png") no-repeat center center;
+    background: url("images/boardingPass.png") no-repeat center center;
 }
-
+.win {
+    /*background: url("images/goldBackground.jpg") no-repeat center center;*/
+    animation: blink .5s step-end infinite alternate;
+}
 

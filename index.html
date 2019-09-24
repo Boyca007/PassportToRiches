@@ -7,39 +7,59 @@
         <script src="code2.js"></script>
     </head>
     <body>
-        <header></header>
+        <header>
+            <img src="images/PassportToRichesLogo.png" alt="Passport To Riches Logo">
+        </header>
         <div id="main">
-            <p id="yes">some text</p>
-            <table id="screen'">
+            <table id="screen">
                 <tr>
-                    <td id="00" class="tile taxi"></td>
-                    <td id="01" class="tile train"></td>
-                    <td id="02" class="tile compass"></td>
-                    <td id="03" class="tile camera"></td>
-                    <td id="04" class="tile luggage"></td>
-                </tr>
-                <tr>
-                    <td id="05" class="tile map"></td>
-                    <td id="06" class="tile plane"></td>
-                    <td id="07" class="tile globe"></td>
-                    <td id="08" class="tile palmTree"></td>
-                    <td id="09" class="tile boardingPass"></td>
-                </tr>
-                <tr>
+                    <td id="00" class="tile"></td>
                     <td id="10" class="tile"></td>
+                    <td id="20" class="tile"></td>
+                    <td id="30" class="tile"></td>
+                    <td id="40" class="tile"></td>
+                </tr>
+                <tr>
+                    <td id="01" class="tile"></td>
                     <td id="11" class="tile"></td>
+                    <td id="21" class="tile"></td>
+                    <td id="31" class="tile"></td>
+                    <td id="41" class="tile"></td>
+                </tr>
+                <tr>
+                    <td id="02" class="tile"></td>
                     <td id="12" class="tile"></td>
-                    <td id="13" class="tile"></td>
-                    <td id="14" class="tile"></td>
+                    <td id="22" class="tile"></td>
+                    <td id="32" class="tile"></td>
+                    <td id="42" class="tile"></td>
                 </tr>
             </table>
             <div id="panel">
-                <div id="buttonPanel">
-                    <div id="topPanel" class="buttonRow"></div>
-                    <div id="bottomPanel" class="buttonRow"></div>
-                    <div id="repeatBet">repeat bet</div>
+                <div id="displayPanel">
+                    
+                    <fieldset class="displayAmount">
+                        <legend>Cash</legend>
+                        <div id="cash">$100</div>
+                    </fieldset>
+                    <fieldset class="displayAmount">
+                        <legend>Win</legend>
+                        <div id="winAmount">$0</div>
+                    </fieldset>
                 </div>
-            </div>-->
+                <div id="setBetPanel">
+                    <img src="images/triangles_down.png" alt="reduce bet by $0.50" id="reduceBet">
+                    <fieldset id="betAmount" class="displayAmount">
+                            <legend>Current Bet</legend>
+                            <div id="currentBet">$0.50</div>
+                        </fieldset>
+                    <!--<p id="betAmount">$0.50</p>-->
+                    <img src="images/triangles_up.png" alt="increase bet by $0.50" id="increaseBet">
+                </div>
+                <div id="submitBetPanel">
+                    <div id="maxBet">Max<br>bet</div>
+                    <div id="repeatBet">Repeat<br>bet</div>
+                </div>
+            </div>
         </div>
         <footer></footer>
         

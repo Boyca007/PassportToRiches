@@ -1,57 +1,26 @@
-const betOptions = [.25, .5, .75, 1, 1.5, 2, 2.5, 3];
-
 const icons = [
-    { name: "taxi", points: 2, key: 0 },
-    { name: "train", points: 2, key: 1 },
-    { name: "compass", points: 2, key: 2 },
-    { name: "camera", points: 3, key: 3 },
-    { name: "luggage", points: 3, key: 4 },
-    { name: "map", points: 5, key: 5 },
-    { name: "palmTree", points: 5, key: 6 },
-    { name: "plane", points: 10, key: 7 },
-    { name: "globe", points: 10, key: 8 },
-    { name: "passport", points: 20, key: 9 },
-    { name: "boardingPass", points: 50, key: 10 }];
+    { name: "taxi", points: 1, key: 0 },
+    { name: "train", points: 1, key: 1 },
+    { name: "compass", points: 1, key: 2 },
+    { name: "camera", points: 2, key: 3 },
+    { name: "luggage", points: 2, key: 4 },
+    { name: "map", points: 3, key: 5 },
+    { name: "palmTree", points: 3, key: 6 },
+    { name: "plane", points: 5, key: 7 },
+    { name: "globe", points: 5, key: 8 },
+    { name: "passport", points: 10, key: 9 },
+    { name: "boardingPass", points: 25, key: 10 }];
 
-    //or.. instead of lookup... icons[i].name
-// function lookupIconNameFromKey(key) {
-//     for (var i = 0; i < icons.length; i++) {
-//         if (icons[i].key === key) {
-//             return icons[i].name;
-//         }
-//     }
-// };
-function Reel(reelnum, numTiles) {//tile1, tile2, tile3) {
+
+function Reel(reelnum, numTiles) {
     this.reelnum = reelnum;
     isWin = false;
     this.tiles = [];
 
     for (var i = 0; i < numTiles; i++) {
-        this.tiles.push({location: i, icon: "", isWin: false});
+        this.tiles.push({location: i, name: "", isWin: false});
     }
 
-    //something to experiment with:
-    //instead of lookup function,
-    //getTileAtLocation(tileNum){
-        //for each obj in this.tiles
-    //}
-};
-function lookupTileLocationInReel(tileNum, reelNum){
-    for (var i = 0; i < model.numLines; i++){
-        if (model.slotMachine[reelNum].tiles[i].location === tileNum){
-            return model.slotMachine[reelNum].tiles[i];
-        }
-    }
-}
-Reel.prototype.getOutcome = function () {
-    //for (var i in //(asks outcome object)
-            //for each numWin, did this reel win ?
-    //assigns icon text 
-};
-Reel.prototype.getIconSet = function () {
-//for all lines in this
-            //arr.push(icon)
-    //return arr
 };
 
 function SlotMachine(reel0, reel1, reel2, reel3, reel4, reel5, reel6, reel7, reel8, reel9) {
@@ -93,8 +62,9 @@ var model = {
     reel4: {},
     slotMachine: {},
 
-    betAmount: 0,
-    cashBalance: 1000,
+    betAmount: 0.50,
+    betIncrement: 0.5,
+    cashBalance: 100,
 
     isWin: false,
     lineHits: 0,
@@ -103,15 +73,11 @@ var model = {
     winAmount: 0,
     totalWins: 0,
     totalLosses: 0,
+    numFreeSpins: 0,
     
     reset: function () {
         doubleLoop(this.numReels, this.numLines, function(i,j){
-            // console.log(i, j);
-            // console.log(model.slotMachine);
-            // console.log(model.slotMachine.grid[i]);
-            // console.log(model.slotMachine.grid[i].tiles[j]);
-            // console.log(model.slotMachine.grid[i].tiles[j].icon);
-            model.slotMachine.grid[i].tiles[j].icon = "";
+            model.slotMachine.grid[i].tiles[j].name = "";
             model.slotMachine.grid[i].tiles[j].isWin = false;
         })
         this.isWin = false;
@@ -119,16 +85,17 @@ var model = {
         this.reelHits = 0;
         this.winIconKeys = [];
         this.winAmount = 0;
+        this.numFreeSpins = 0;
 
     },
     updateCashBalance: function (amountChange) {
         this.cashBalance += amountChange;
-        view.updateCash();
     },
     generateOutcome: function() {
-        var outcome = 29; //generateRandomNum(100);
+        var outcome = generateRandomNum(100);
         console.log('outcome: ' + outcome);
-        if (outcome <= 30) { //<-- 30%
+        if (outcome <= 20) { //<-- 20%
+            console.log("reel connect");
             //reel connect
             this.isWin = true;
             console.log('is win: ' + this.isWin);
@@ -148,17 +115,24 @@ var model = {
             // if (chanceForWilds <= 25){
 
             // }
-        } else if (outcome <=45) {//<-- 15%
+        } else if (outcome <=35) {//<-- 15%
+            console.log("free spins");
             //free spins
             this.isWin = true;
             this.totalWins++;
-        } else if (outcome <=50) {//<-- 5%  <-- higher if already won, up to max bonus = 0%
+            // this.numFreeSpins += generateRandomNum(11);
+
+        } else if (outcome <=40) {//<-- 5%  <-- higher if already won, up to max bonus = 0%
+            console.log("bonus");
             //bonus
             this.isWin = true;
             this.totalWins++;
-        } else { //<-- 50%
+
+        } else { //<-- 60%
+            console.log("lose");
             //lose
             this.totalLosses;
+
         } 
     },
     placeTiles: function() {
@@ -166,7 +140,6 @@ var model = {
         //place winning tiles
         if (this.isWin) {
             doubleLoop(this.reelHits, this.lineHits, function(i,j){
-                //model.slotMachine.grid[i].tiles[j].
                 var tiles = model.slotMachine.grid[i].tiles;
                 var randomLine = 0;
                 var flag = true;
@@ -178,7 +151,6 @@ var model = {
                         tiles[randomLine].isWin = true;
                         tiles[randomLine].name = icons[model.winIconKeys[j]].name;
                     }
-
                 }
             })
         }
@@ -195,7 +167,11 @@ var model = {
     },
     calculateWinnings: function() {
         for (var i = 0; i < this.lineHits; i++) {
-            this.winAmount = this.betAmount * this.reelHits * icons[this.winIconKeys].points;
+            console.log('bet amount: ' + this.betAmount);
+            console.log('reel hits:' + this.reelHits);
+            console.log('points: ' + icons[this.winIconKeys[i]].points);
+            this.winAmount += this.betAmount * this.reelHits * icons[this.winIconKeys[i]].points; 
+            console.log('win amount:' + this.winAmount);
         }
     }
 };
@@ -203,42 +179,127 @@ var model = {
 var controller = {
     handleBet: function(){
 
+        //reset
         model.reset();
-        //console.log(model);
+
         //assign bet + take cash 
-        //do
+        model.updateCashBalance(model.betAmount*-1);
+
+        //
+        do {
             model.generateOutcome();
             model.placeTiles();
-            console.log(model.slotMachine);
-            //calcwinnings
-        //while (free spins > 0)
-        //give winnings
-        //view animate
-            
-    }
-    //handle bet
-        
+            model.calculateWinnings();
+            model.numFreeSpins -= 1;
+            console.log('numFreeSpins remaining: ' + model.numFreeSpins);
+            //view pause animation
+        } while (model.numFreeSpins > 0);
 
-    //handle bet amount change 
+        console.log(model.slotMachine.grid);
+
+        //give winnings
+        model.updateCashBalance(model.winAmount);
+
+        //view animate
+        view.animateGrid();
+        view.showCashBalance();
+        view.showWinAmount();
+
+        console.log("handleBet complete");
+            
+    },
+    reduceBet: function(change){
+        if (model.betAmount !== 0.5){
+            model.betAmount -= model.betIncrement;
+            view.showCurrentBet();
+        }
+    },
+    increaseBet: function(){
+        if (model.betAmount !== 3){
+            model.betAmount += model.betIncrement;
+            view.showCurrentBet();
+        }
+    },
+    maxBet: function(){
+        model.betAmount = 3;
+        view.showCurrentBet();
+    }
+
 };
 
     
 
 var view = {
-    //animate spin
-
-    //displayoutcome
-
-    //show cash
-
-    //show winning
+    showCashBalance: function(){
+        var cash = document.getElementById("cash")
+        cash.innerHTML = "$" + model.cashBalance;
+    },
+    showWinAmount: function() {
+        var win = document.getElementById("winAmount");
+        win.innerHTML = "$" + model.winAmount;
         //if big win
+    },
+    showCurrentBet: function(){
+        var bet = document.getElementById("currentBet");
+        bet.innerHTML = "$" + model.betAmount;
+    },
+    displayGrid: function(){
+        var tiles = document.getElementsByClassName("tile");
+        var currReel = 0;
+        var currLine = 0;
+        for (var i = 0; i < tiles.length; i++){
+            var tileIcon = model.slotMachine.grid[currReel].tiles[currLine].name
+            tiles.item(i).setAttribute("class", "tile " + tileIcon);
+            currReel++;
+            if (currReel === (model.numReels)){
+                currReel = 0;
+                currLine++;
+            }
+        }
+    },
+    animateGrid: function(){
+        var tiles = document.getElementsByClassName("tile");
+
+        for (var i = 0; i < tiles.length; i++){
+            this.fastTwitch(tiles.item(i));
+        }
+    },
+    fastTwitch: function(item){
+        var randTime = generateRandomNum(4) * 1000 + generateRandomNum(11) * 100;
+        var x = setInterval(view.displayRandomTile,100,item)
+        setTimeout(function() {
+            clearInterval(x);
+            view.slowTwitch(item);
+        },randTime);
+    },
+    slowTwitch: function(item){
+        var x = setInterval(view.displayRandomTile,250,item)
+        setTimeout(function() {
+            clearInterval(x);
+            view.displayTile(item);
+        },1000);
+    },
+    displayRandomTile: function(tile){
+        var tileIcon = icons[generateRandomNum(icons.length)].name;
+        tile.setAttribute("class", "tile " + tileIcon);
+    },
+    displayTile: function(tile) {
+        var tileReel = tile.id.charAt(0);
+        var tileLine = tile.id.charAt(1);
+        var slotTile = model.slotMachine.grid[tileReel].tiles[tileLine]
+        var tileIcon = slotTile.name
+        
+        if (slotTile.isWin) {
+            tile.setAttribute("class", "tile " + tileIcon + " win");
+        } else {
+            tile.setAttribute("class", "tile " + tileIcon);
+        }
+    }   
+
 }
 
 function init(){
     
-    //set up tile grid
-    //do I even need to define the reel object? just loop to create and add to slot machine array obj
     model.reel0 = new Reel(0, model.numLines);
     model.reel1 = new Reel(1, model.numLines);
     model.reel2 = new Reel(2, model.numLines);
@@ -247,38 +308,33 @@ function init(){
 
     model.slotMachine = new SlotMachine(model.reel0, model.reel1, model.reel2, model.reel3, model.reel4);
 
+    //model.slotMachine = new SlotMachine(new Reel())
+
     //set up handlers
     var submitBet = document.getElementById("repeatBet");
     submitBet.onclick = controller.handleBet;
+    var reduceBet = document.getElementById("reduceBet");
+    reduceBet.onclick = controller.reduceBet;
+    var increaseBet = document.getElementById("increaseBet");
+    increaseBet.onclick = controller.increaseBet;
+    var maxBet = document.getElementById("maxBet");
+    maxBet.onclick = controller.maxBet;
 
-    //  console.log(model.slotMachine);
-    //  console.log("init run complete.");
+
 }
+window.addEventListener("load", function() {
+    var f = document.getElementsByClassName('win');
+    for (var x in wins) {
+        setInterval()
+    }
+    
+    //for (var x in wins) {
+        // setInterval(function() {
+        //     x.style.
+        // x.style.display = (x.style.display == 'none' ? '' : 'none');
+        // }, 500);
+    //}
+
+}, false);
 
 window.onload = init;
-
-//var x = lookupIconNameFromKey(7);
-// var x = generateRandomNum(10, ["taxi","train","compass","globe","map","luggage","camera","palmTree","plane","boardingPass"]);
-// console.log(x);
-
-// console.log(model.reel0);
-// console.log(model.reel1);
-// console.log(model.reel2);
-// console.log(model.reel3);
-// console.log(model.reel4);
-// console.log(model.slotMachine);
-        
-//model.generateOutcome();
-// console.log(model.isWin);
-// console.log(model.lineHits);
-// console.log(model.reelHits);
-// // console.log(model.winIconTypes);
-// console.log('wintypes:');
-//                 console.log(model.winIconKeys);
-
-// var x = icons[3].name;
-// console.log(x);
-
-//doubleLoop(3,4,function(i,j){console.log(i,j);})
-
-//model.placeTiles();
