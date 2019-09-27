@@ -8,7 +8,8 @@
     /*border: thin solid black;*/
     padding: 30px;
     margin-top: 0px;
-    background: url("images/sunset.jpg") no-repeat center center;
+    background: url("images/oldPaper.jpg") no-repeat center center;
+    background-color: #DFC8A6;
 }
 #screen{
     display: table;

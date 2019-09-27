@@ -1,16 +1,54 @@
-const icons = [
-    { name: "taxi", points: 1, key: 0 },
-    { name: "train", points: 1, key: 1 },
-    { name: "compass", points: 1, key: 2 },
-    { name: "camera", points: 2, key: 3 },
-    { name: "luggage", points: 2, key: 4 },
-    { name: "map", points: 3, key: 5 },
-    { name: "palmTree", points: 3, key: 6 },
-    { name: "plane", points: 5, key: 7 },
-    { name: "globe", points: 5, key: 8 },
-    { name: "passport", points: 10, key: 9 },
-    { name: "boardingPass", points: 25, key: 10 }];
+//work list
+    //bug - add prior reel to removed icon list
+    //free spins
+    //bonus
+        //how to make sticky icons
+    
 
+
+const icons = [
+    { name: "taxi", points: 0.50, key: 0 },
+    { name: "train", points: .50, key: 1 },
+    { name: "compass", points: .75, key: 2 },
+    { name: "camera", points: 1, key: 3 },
+    { name: "luggage", points: 1.25, key: 4 },
+    { name: "map", points: 1.25, key: 5 },
+    { name: "palmTree", points: 1.5, key: 6 },
+    { name: "plane", points: 2, key: 7 },
+    { name: "globe", points: 2.5, key: 8 },
+    { name: "passport", points: 3, key: 9 },
+    { name: "boardingPass", points: 5, key: 10 }];
+const linePatterns = [
+    [0,0,0,0,0],
+    [0,0,1,0,0],
+    [0,0,2,0,0],
+    [0,2,2,2,0],
+    [0,1,1,1,0],
+    [0,1,0,1,0],
+    [0,2,0,2,0],
+    [0,2,1,2,0],
+    [0,1,2,1,0],
+    [1,1,1,1,1],
+    [1,1,0,1,1],
+    [1,1,2,1,1],
+    [1,2,0,2,1],
+    [1,2,2,2,1],
+    [1,0,0,0,1],
+    [1,0,1,0,1],
+    [1,2,1,2,1],
+    [1,2,2,2,1],
+    [1,0,0,0,1],
+    [1,0,2,0,1],
+    [2,2,2,2,2],
+    [2,2,1,2,2],
+    [2,0,2,0,2],
+    [2,1,2,1,2],
+    [2,0,1,0,2],
+    [2,1,0,1,2],
+    [2,2,0,2,2],
+    [2,1,1,1,2],
+    [2,0,0,0,2,]
+]
 
 function Reel(reelnum, numTiles) {
     this.reelnum = reelnum;
@@ -37,8 +75,11 @@ function generateRandomNum(max, arrUnavailable, skew) {
     if (arrUnavailable === undefined){
         arrUnavailable = [];
     }
+    console.log(arrUnavailable);
     do {
         randomGeneratedNumber = Math.floor(Math.random() * max);
+        console.log(randomGeneratedNumber);
+        console.log(arrUnavailable.indexOf(randomGeneratedNumber))
     } while (arrUnavailable.indexOf(randomGeneratedNumber) > -1); 
 
     return randomGeneratedNumber; 
@@ -50,7 +91,16 @@ function doubleLoop(maxField1, maxField2, func){
         }
     }
 }
-
+function isTileCollision(pattern1,arr){
+    for (var i = 0; i < arr.length; i++){
+        for (var j = 0; j < pattern1.length; j++){
+            if (pattern1[j] === arr[i][j]){
+                return true;
+            }
+        }   
+    }
+    return false;
+}
 var model = {
 
     numReels: 5,
@@ -70,9 +120,11 @@ var model = {
     lineHits: 0,
     reelHits: 0,
     winIconKeys: [],
+    winPatterns: [],
     winAmount: 0,
     totalWins: 0,
     totalLosses: 0,
+
     numFreeSpins: 0,
     
     reset: function () {
@@ -84,6 +136,7 @@ var model = {
         this.lineHits = 0;
         this.reelHits = 0;
         this.winIconKeys = [];
+        this.winPatterns = [],
         this.winAmount = 0;
         this.numFreeSpins = 0;
 
@@ -98,23 +151,14 @@ var model = {
             console.log("reel connect");
             //reel connect
             this.isWin = true;
-            console.log('is win: ' + this.isWin);
             this.totalWins++;
             this.lineHits = generateRandomNum(this.numLines) + 1; //adding 1 (0 hit is actually 1 hit)
-            console.log('lineHits: ' + this.lineHits);
-            this.reelHits = generateRandomNum(this.numReels, [0,1,2]) + 1; //<-- must be at least 3, no points if we only matched 1 or 2 reels
-            console.log('reelhits: ' + this.reelHits);
+            this.reelHits = generateRandomNum(this.numReels, [0,1]) + 1; //<-- must be at least 3, no points if we only matched 1 or 2 reels
             for (var i = 0; i < this.lineHits; i++) {
                 this.winIconKeys.push(generateRandomNum(icons.length, this.winIconKeys));
             }
-            console.log('win Icon keys:');
-            console.log(this.winIconKeys);
 
-            //add wilds in later
-            // var chanceForWilds = generateRandomNum(100);
-            // if (chanceForWilds <= 25){
-
-            // }
+            
         } else if (outcome <=35) {//<-- 15%
             console.log("free spins");
             //free spins
@@ -122,11 +166,24 @@ var model = {
             this.totalWins++;
             // this.numFreeSpins += generateRandomNum(11);
 
+            //free spins icon looks different
+                //"Your ticket to... FREE SPINS"    
+
+
         } else if (outcome <=40) {//<-- 5%  <-- higher if already won, up to max bonus = 0%
             console.log("bonus");
             //bonus
             this.isWin = true;
             this.totalWins++;
+
+            //assign 3 passports
+                //X number of free spins
+                    //add first city to icon list
+                        //city is sticky and acts as wild + multiplier for line
+                        //once you get 3 more passports, city changes to next city + increase
+                        //multiplier
+
+            //have icons look different
 
         } else { //<-- 60%
             console.log("lose");
@@ -136,23 +193,24 @@ var model = {
         } 
     },
     placeTiles: function() {
-
+        var pattern;
+        var tile;
         //place winning tiles
         if (this.isWin) {
-            doubleLoop(this.reelHits, this.lineHits, function(i,j){
-                var tiles = model.slotMachine.grid[i].tiles;
-                var randomLine = 0;
-                var flag = true;
+            for (var i = 0; i < this.lineHits; i++) {
+                
+                do {
+                    pattern = linePatterns[generateRandomNum(linePatterns.length)];
+                } while (isTileCollision(pattern,this.winPatterns))
+                this.winPatterns.push(pattern);
 
-                while (flag){ //loop until we find one that's not already taken
-                    randomLine = generateRandomNum(model.numLines)
-                    if (!tiles[randomLine].isWin) {
-                        flag = false;
-                        tiles[randomLine].isWin = true;
-                        tiles[randomLine].name = icons[model.winIconKeys[j]].name;
-                    }
+                for (var j = 0; j < this.reelHits; j++){
+                    tile = this.slotMachine.grid[j].tiles[pattern[j]];
+                    tile.isWin = true;
+                    tile.name = icons[this.winIconKeys[i]].name;
                 }
-            })
+                
+            }
         }
 
         //fill in grid with losing tiles
@@ -167,11 +225,7 @@ var model = {
     },
     calculateWinnings: function() {
         for (var i = 0; i < this.lineHits; i++) {
-            console.log('bet amount: ' + this.betAmount);
-            console.log('reel hits:' + this.reelHits);
-            console.log('points: ' + icons[this.winIconKeys[i]].points);
             this.winAmount += this.betAmount * this.reelHits * icons[this.winIconKeys[i]].points; 
-            console.log('win amount:' + this.winAmount);
         }
     }
 };
@@ -181,17 +235,19 @@ var controller = {
 
         //reset
         model.reset();
+        view.reset();
 
         //assign bet + take cash 
         model.updateCashBalance(model.betAmount*-1);
+        view.showCashBalance();
+        view.showWinAmount();
 
-        //
+        //process bet
         do {
             model.generateOutcome();
             model.placeTiles();
             model.calculateWinnings();
             model.numFreeSpins -= 1;
-            console.log('numFreeSpins remaining: ' + model.numFreeSpins);
             //view pause animation
         } while (model.numFreeSpins > 0);
 
@@ -202,8 +258,6 @@ var controller = {
 
         //view animate
         view.animateGrid();
-        view.showCashBalance();
-        view.showWinAmount();
 
         console.log("handleBet complete");
             
@@ -227,9 +281,13 @@ var controller = {
 
 };
 
-    
-
 var view = {
+    numTilesDisplayed: 0,
+    isAnimationFinished: false,
+    reset: function(){
+        this.numTilesDisplayed = 0,
+        this.isAnimationFinished = false
+    },
     showCashBalance: function(){
         var cash = document.getElementById("cash")
         cash.innerHTML = "$" + model.cashBalance;
@@ -294,6 +352,12 @@ var view = {
         } else {
             tile.setAttribute("class", "tile " + tileIcon);
         }
+        this.numTilesDisplayed++;
+        if (this.numTilesDisplayed === (model.numReels * model.numLines)) {
+            this.isAnimationFinished = true;
+            this.showWinAmount();
+            this.showCashBalance();
+        }
     }   
 
 }
@@ -322,19 +386,6 @@ function init(){
 
 
 }
-window.addEventListener("load", function() {
-    var f = document.getElementsByClassName('win');
-    for (var x in wins) {
-        setInterval()
-    }
-    
-    //for (var x in wins) {
-        // setInterval(function() {
-        //     x.style.
-        // x.style.display = (x.style.display == 'none' ? '' : 'none');
-        // }, 500);
-    //}
-
-}, false);
 
 window.onload = init;
+
